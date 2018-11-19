@@ -1,0 +1,107 @@
+image: yastefan/bs-ci:latest
+
+stages:
+- build
+- run
+
+build:
+  tags:
+    - fai
+  stage: build
+  allow_failure: false
+  when: always
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+  script:
+  - cd 03R_prozesse
+  - ls -alh myshell/src | tee -a build.txt
+  - rm -rf build && mkdir build && cd build && cmake ..
+  - make
+
+run-test-input:
+  tags:
+    - fai
+  stage: run
+  allow_failure: false 
+  when: on_success  
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+    when: always 
+  dependencies:
+  - build
+  script:
+  - cd 03R_prozesse/build/tests
+  - echo "ls -alh" | ./test-input
+  - echo -n "" | ./test-input
+
+run-test-foreground:
+  tags:
+    - fai
+  stage: run
+  allow_failure: false 
+  when: on_success  
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+    when: always 
+  dependencies:
+  - build
+  script:
+  - cd 03R_prozesse/build/tests
+  - ./test-foreground
+
+run-test-background:
+  tags:
+    - fai
+  stage: run
+  allow_failure: false 
+  when: on_success  
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+    when: always 
+  dependencies:
+  - build
+  script:
+  - cd 03R_prozesse/build/tests
+  - ./test-background
+
+run-test-zombies:
+  tags:
+    - fai
+  stage: run
+  allow_failure: false 
+  when: on_success  
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+    when: always 
+  dependencies:
+  - build
+  script:
+  - cd 03R_prozesse/build/tests
+  - ./test-zombies
+
+run-test-cd:
+  tags:
+    - fai
+  stage: run
+  allow_failure: false 
+  when: on_success  
+  artifacts:
+    untracked: true
+    paths:
+    - 03R_prozesse
+    when: always 
+  dependencies:
+  - build
+  script:
+  - cd 03R_prozesse/build/tests
+  - ./test-cd
